@@ -2,9 +2,9 @@ from app import app
 
 #render_template gives you access to Jinj2 template
 from flask import render_template,request, make_response,flash,redirect
-from app.forms import LoginForm, RegisterForm, RegisterForm
-from app.db_models import Users
+from app.forms import LoginForm, RegisterForm, AddFriendForm
 from app import db
+from app.db_models import Users,Friends
 
 @app.route('/',methods=['GET','POST'])
 def index():
@@ -53,6 +53,23 @@ def userParams():
     name = request.args.get('name')
     return render_template('template_user.html',name=name)
 
+
+@app.route('/addfriend',methods=['GET','POST'])
+def addFriend():
+    form = AddFriendForm()
+    if request.method == 'GET':
+        return render_template('template_friends.html',form=form)
+    else:
+        if form.validate_on_submit():
+            friend = Friends(form.name.data,form.address.data,form.age.data)
+            db.session.add(friend)
+            db.session.commit()
+            flash('Friend registered')
+            return redirect('/user')
+        else:
+            flash('Invalid data')
+            return render_template('template_friends.html',form=form)
+		
 #print('This is not any more included in index() function. Huom this is my own print')
 
 #This is one line comment

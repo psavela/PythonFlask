@@ -4,6 +4,8 @@ class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(128),unique=True)
     passw = db.Column(db.String(128))
+
+	
     def __init__(self, email, passw):
         self.email = email
         self.passw = passw
