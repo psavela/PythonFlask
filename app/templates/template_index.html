@@ -2,7 +2,7 @@
 {#  replaced by Jinj2 template engine with actual data #}
 
 {% extends 'base.html' %}
-{% block title %}Login{% endblock %}
+{% block title %}Login {{super()}}{% endblock %}
 {% block head %}
     {{super()}}
     <style>
