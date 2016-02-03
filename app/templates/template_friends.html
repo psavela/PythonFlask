@@ -6,13 +6,13 @@
 {% block head %}
     {{super()}}
     <style>
-        .my_container{
-         
+       .my_container{
             width: 500px;
-            margin: 3px auto;
+            margin: 30px auto;
             padding: 8px;
             border: 2px solid gray;
             border-radius: 5px;
+            background-color: beige;
         }
     </style>
 {% endblock %}
@@ -20,10 +20,10 @@
 {% block body %}
     {{super()}}
     <div class="my_container">
-        <form action="/addfriend" method="POST">
+        <form action="/friends" method="POST">
             {{ form.csrf_token }}
             {{ form.name.label }}
-            {{ form.name(class='form-control',id='name') }}
+            {{ form.name(class='form-control') }}
             
             {{ form.address.label }}
             {{ form.address(class='form-control') }}

@@ -1,8 +1,8 @@
 from app import app
 
 #render_template gives you access to Jinj2 template
-from flask import render_template,request, make_response,flash,redirect
-from app.forms import LoginForm, RegisterForm, AddFriendForm
+from flask import render_template,request, make_response,flash,redirect,session
+from app.forms import LoginForm, RegisterForm, FriendForm
 from app import db
 from app.db_models import Users,Friends
 
@@ -11,36 +11,51 @@ def index():
     login = LoginForm()
     #Check if get method
     if request.method == 'GET':
-        return render_template('template_index.html',form=login)
+        return render_template('template_index.html',form=login,isLogged=False)
     else:
         #check if form data is valid
         if login.validate_on_submit():
-            print(login.email.data)
-            print(login.passw.data)
-            return render_template('template_user.html')
+            #Check if correct username and password
+            user = Users.query.filter_by(email=login.email.data).filter_by(passw=login.passw.data)
+            print(user)
+            if user.count() == 1:
+                print(user[0])
+                session['user_id'] = user[0].id
+                session['isLogged'] = True
+                #tapa1
+                friend = Friends.query.filter_by(user_id=user[0].id)
+                print(friend)
+                return render_template('template_user.html',isLogged=True,friends=friend)
+            else:
+                flash('Wrong email or password')
+                return render_template('template_index.html',form=login,isLogged=False)
         #form data was not valid
         else:
             flash('Give proper information to email and password fields')
-            return render_template('template_index.html',form=login)
+            return render_template('template_index.html',form=login,isLogged=False)
 
 
 @app.route('/register',methods=['GET','POST'])
 def registerUser():
     form = RegisterForm()
     if request.method == 'GET':
-        return render_template('template_register.html',form=form)
+        return render_template('template_register.html',form=form,isLogged=False)
     else:
         if form.validate_on_submit():
             user = Users(form.email.data,form.passw.data)
-            db.session.add(user)
-            db.session.commit()
+            try:
+                db.session.add(user)
+                db.session.commit()
+            except:
+                db.session.rollback()
+                flash('Username allready in use')
+                return render_template('template_register.html',form=form,isLogged=False)
             flash("Name {0} registered".format(form.email.data))
             return redirect('/')
         else:
             flash('Invalid email address or no password given')
-            return render_template('template_register.html',form=form)
+            return render_template('template_register.html',form=form,isLogged=False)
             
-
         
 @app.route('/user/<name>')
 def user(name):
@@ -54,22 +69,32 @@ def userParams():
     return render_template('template_user.html',name=name)
 
 
-@app.route('/addfriend',methods=['GET','POST'])
+@app.route('/friends',methods=['GET','POST'])
 def addFriend():
-    form = AddFriendForm()
+    if not('isLogged' in session) or (session['isLogged'] == False):
+        return redirect('/')
+    form = FriendForm()
     if request.method == 'GET':
-        return render_template('template_friends.html',form=form)
+        return render_template('template_friends.html',form=form,isLogged=True)
     else:
         if form.validate_on_submit():
-            friend = Friends(form.name.data,form.address.data,form.age.data)
-            db.session.add(friend)
+            temp = Friends(form.name.data,form.address.data,form.age.data,session['user_id'])
+            db.session.add(temp)
             db.session.commit()
-            flash('Friend registered')
-            return redirect('/user')
+            #tapa2
+            user = Users.query.get(session['user_id'])
+            print(user.friends)
+            return render_template('template_user.html',isLogged=True,friends=user.friends)
         else:
-            flash('Invalid data')
-            return render_template('template_friends.html',form=form)
-		
+            flash('Give proper values to all fields')
+            return render_template('template_friends.html',form=form,isLogged=True)
+
+@app.route('/logout')
+def logout():
+    #delete user session (clear all values)
+    session.clear()
+    return redirect('/')
+        
 #print('This is not any more included in index() function. Huom this is my own print')
 
 #This is one line comment

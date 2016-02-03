@@ -1,6 +1,6 @@
 from flask.ext.wtf import Form
 from wtforms import StringField,PasswordField,SubmitField,IntegerField
-from wtforms.validators import Required,Email
+from wtforms.validators import Required,Email,NumberRange
 
 class LoginForm(Form):
     email = StringField('Enter your email',validators=[Required(),Email()])
@@ -12,8 +12,8 @@ class RegisterForm(Form):
     passw = PasswordField('Enter password',validators=[Required()])
     submit = SubmitField('Register');
 	
-class AddFriendForm(Form):
-    name = StringField('Enter friend´s name',validators=[Required()])
-    address = StringField('Enter friend´s address',validators=[Required()])
-    age = IntegerField('Enter friend´s age',validators=[Required()])
-    submit = SubmitField('Add new friend')
+class FriendForm(Form):
+    name = StringField('Enter friend name',validators=[Required()])
+    address = StringField('Enter friend address',validators=[Required()])
+    age = IntegerField('Enter friend age',validators=[Required(),NumberRange(min=0,max=115,message="Enter value between 0-115")])
+    submit = SubmitField('Save')

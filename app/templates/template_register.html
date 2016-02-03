@@ -2,7 +2,7 @@
 {#  replaced by Jinj2 template engine with actual data #}
 
 {% extends 'base.html' %}
-{% block title %}Login{% endblock %}
+{% block title %}Register {{super()}}{% endblock %}
 {% block head %}
     {{super()}}
     <style>
@@ -29,8 +29,7 @@
             {{form.passw.label}}
             {{form.passw(class='form-control')}}
             
-            {{form.submit.label}}
-            {{form.submit(class='btn btn-default')}}
+			{{form.submit(class='btn btn-default')}}
         </form>
     </div>
 {% endblock %}
