@@ -19,28 +19,33 @@
 {% endblock %}
 {% block navbar %}{{super()}}{% endblock %}
 {% block body %}
-    {# call super() if you want to include code from base.html template #}
-    {{super()}}
-    <div class="my_container">
-        <h1>Here will be table of your friends</h1>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Age</th>              
-                </tr>           
-            </thead>
-            <tbody>
-                {% for item in friends %}
-                    <tr>
-                        <td>{{item.name}}</td>
-                        <td>{{item.address}}</td>
-                        <td>{{item.age}}</td>
-                        <td><img class='img-responsive' src="{{item.filename}}"/></td>
-                    </tr>               
-                {% endfor %}            
-            </tbody>        
-        </table>
+	{{super()}}
+	<div class="my_container">
+		<h1>Here will be table of your friends</h1>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Age</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in friends.items %}
+					<tr>
+						<td>{{item.name}}</td>
+						<td>{{item.address}}</td>
+						<td>{{item.age}}</td>
+						<td><a href="/app/delete/{{item.id}}" >Delete</a></td>
+						<td><a href="/app/update/{{item.id}}" >Update</a></td>
+						<td><img style="width:40px;height:40px;" class='img-responsive' src="{{item.filename}}"/></td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% if friends.has_prev %}<a href="{{ url_for('auth.index', page=friends.prev_num) }}">&lt;&lt; Next Friends</a>
+		{% else %}&lt;&lt; Next friends{% endif %} | 
+		{% if friends.has_next %}<a href="{{ url_for('auth.index', page=friends.next_num) }}">Prev friends &gt;&gt;</a>
+		{% else %}Prev friends &gt;&gt;{% endif %}
 	</div>
 {% endblock %}

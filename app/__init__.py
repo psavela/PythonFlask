@@ -11,7 +11,7 @@ bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
 
 from blueprint.ud.ud_blueprint import ud
+from blueprint.auth.auth_blueprint import auth
 #Register all needed blueprints
 app.register_blueprint(ud)
-
-from app import routers
+app.register_blueprint(auth)

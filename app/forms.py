@@ -16,5 +16,5 @@ class FriendForm(Form):
     name = StringField('Enter friend name',validators=[Required()])
     address = StringField('Enter friend address',validators=[Required()])
     age = IntegerField('Enter friend age',validators=[Required(),NumberRange(min=0,max=115,message="Enter value between 0-115")])
-    upload_file = FileField('Upload Image')
+    upload_file = FileField()
     submit = SubmitField('Save')

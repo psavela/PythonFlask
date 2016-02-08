@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Register {{super()}}{% endblock %}
+{% block head %}
+	{{super()}}
+	<style>
+		.my_container{
+			
+			width: 500px;
+			margin: 30px auto;
+			padding: 8px;
+			border: 2px solid gray;
+			border-radius: 5px;
+			background-color: beige;
+		}
+	</style>
+{% endblock %}
+{% block navbar %}{{super()}}{% endblock %}
+{% block body %}
+	{{super()}}
+	<div class="my_container">
+		<form action="/register" method="POST">
+			{{ form.csrf_token }}
+			{{ form.email.label }}
+			{{ form.email(class='form-control',id='email') }}
+			
+			{{ form.passw.label }}
+			{{ form.passw(class='form-control') }}
+			
+			{{form.submit(class='btn btn-default')}}
+		</form>
+	</div>
+{% endblock %}
